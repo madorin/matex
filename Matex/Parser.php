@@ -106,13 +106,18 @@ private function ProFunction(string $Name, float &$Value = null): void {
 		if (!isset($Function))
 			throw new Exception('Unknown function: '.$Name, 6);
 		$this->Functions[$Name] = $Function;
-	} else
+	}
+	else
 		$Function = $this->Functions[$Name];
 	if (!$this->GetArguments($Arguments))
 		throw new Exception('Syntax error', 1);
-	if (isset($Function['arc']) && ($Function['arc'] != count($Arguments)))
-		throw new Exception('Invalid argument count', 3);
-	$Value = call_user_func($Function['ref'], $this->ProArgument($Arguments));
+	if (isset($Function['arc'])) {
+		if ($Function['arc'] != count($Arguments))
+			throw new Exception('Invalid argument count', 3);
+		$Value = call_user_func_array($Function['ref'], $this->ProArgument($Arguments));
+	}
+	else
+		$Value = call_user_func($Function['ref'], $this->ProArgument($Arguments));
 }
 
 private function Term(): float {
