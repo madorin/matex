@@ -123,7 +123,7 @@ function MinAdd($A, $B) {
 $Parser = new \Matex\Parser();
 $Parser->Variables = [
 	'a' => 1,
-	'cool' => -10.59,
+	'bet' => -10.59,
 	'pi' => 3.141592653589
 	];
 $Parser->OnVariable = [$this, 'DoVariable'];
@@ -133,5 +133,5 @@ $Parser->Functions = [
 	'sum' => ['ref' => '\\Space\\Class::Sum', 'arc' => null]
 	];
 $Parser->OnFunction = [$this, 'DoFunction'];
-echo $Parser->Execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / cool ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
+echo $Parser->Execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / bet ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
 ```
