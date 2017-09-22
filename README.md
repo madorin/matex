@@ -74,7 +74,7 @@ public function DoVariable($Name, &$Value) {
 			// Here may be a database request, or a function call
 			$Value = 999;
 			break;
-		case 'delta':
+		case 'hit':
 			$Value = 666;
 			break;
 	}
@@ -93,9 +93,9 @@ public function DoFunction($Name, &$Value) {
 			// Map to a system function
 			$Value = ['ref' => 'cos', 'arc' => 1];
 			break;
-		case 'mintwoadd':
+		case 'minadd':
 			// Map to a public object instance function
-			$Value = ['ref' => [$this, 'MinTwoAdd'], 'arc' => 2];
+			$Value = ['ref' => [$this, 'MinAdd'], 'arc' => 2];
 			break;
 	}
 }
@@ -114,9 +114,9 @@ static function Sum($Arguments) {
 	return $Result;
 }
 // Just a sample custom function
-function MinTwoAdd($Arguments) {
-	$MinTwo = $Arguments[0] < 2 ? 2 : $Arguments[0];
-	return $MinTwo + $Arguments[1];
+function MinAdd($A, $B) {
+	$R = $A < 2 ? 2 : $A;
+	return $R + $B;
 }
 
 // Let's do some calculations
@@ -133,5 +133,5 @@ $Parser->Functions = [
 	'sum' => ['ref' => '\\Space\\Class::Sum', 'arc' => null]
 	];
 $Parser->OnFunction = [$this, 'DoFunction'];
-echo $Parser->Execute('a + MinTwoAdd(PI * sin(zen), cos(25 * pi)) / cool ^ ((A + 2) * 2) + sum(5, 4, 6 * delta)');
+echo $Parser->Execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / cool ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
 ```
