@@ -2,12 +2,13 @@
 PHP Mathematical formula parser and evaluator
 
 ## Features
-* Fast
-* Compact
+* Fast evaluation
+* Compact codebase
 * Operators: + - * / ^
-* Brackets
-* Variables
-* Functions
+* Brackets, nested, unlimited levels
+* Variables: predefined or estimated dynamically
+* Functions: predefined or connected dynamically
+* String arguments to functions
 
 ## Examples
 
@@ -41,7 +42,7 @@ $parser = new \Matex\Parser();
 $parser->variables = [
 	'a' => 1
 	];
-$parser->onVariable = [$this, 'DoVariable'];
+$parser->onVariable = [$this, 'doVariable'];
 echo $parser->execute('a + b');
 ```
 
