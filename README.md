@@ -13,52 +13,52 @@ PHP Mathematical formula parser and evaluator
 
 Basic:
 ```php
-$Parser = new \Matex\Parser();
-echo $Parser->Execute('1 + 2');
+$parser = new \Matex\Parser();
+echo $parser->execute('1 + 2');
 ```
 
 Variables:
 ```php
-$Parser = new \Matex\Parser();
-$Parser->Variables = [
+$parser = new \Matex\Parser();
+$parser->variables = [
 	'a' => 1,
 	'b' => 2
 	];
-echo $Parser->Execute('a + b');
+echo $parser->execute('a + b');
 ```
 
 Dynamic variables:
 ```php
-public function DoVariable($Name, &$Value) {
-	switch ($Name) {
+public function doVariable($name, &$value) {
+	switch ($name) {
 		case 'b':
-			$Value = 2;
+			$value = 2;
 			break;
 	}
 }
 
-$Parser = new \Matex\Parser();
-$Parser->Variables = [
+$parser = new \Matex\Parser();
+$parser->variables = [
 	'a' => 1
 	];
-$Parser->OnVariable = [$this, 'DoVariable'];
-echo $Parser->Execute('a + b');
+$parser->onVariable = [$this, 'DoVariable'];
+echo $parser->execute('a + b');
 ```
 
 Functions:
 ```php
-static function Sum($Arguments) {
-	$Result = 0;
-	foreach ($Arguments as $Argument)
-		$Result += $Argument;
-	return $Result;
+static function sum($arguments) {
+	$result = 0;
+	foreach ($arguments as $argument)
+		$result += $argument;
+	return $result;
 }
 
-$Parser = new \Matex\Parser();
-$Parser->Functions = [
-	'sum' => ['ref' => '\\Space\\Class::Sum', 'arc' => null]
+$parser = new \Matex\Parser();
+$parser->functions = [
+	'sum' => ['ref' => '\\Space\\Class::sum', 'arc' => null]
 ];
-echo $Parser->Execute('sum(1, 2, 3)');
+echo $parser->execute('sum(1, 2, 3)');
 ```
 
 Extravaganza:
@@ -68,14 +68,14 @@ Dynamic variable resolver
 Invoked when the variable is not found in the cache
 Returns the value by name
 */
-public function DoVariable($Name, &$Value) {
-	switch ($Name) {
+public function doVariable($name, &$value) {
+	switch ($name) {
 		case 'zen':
 			// Here may be a database request, or a function call
-			$Value = 999;
+			$value = 999;
 			break;
 		case 'hit':
-			$Value = 666;
+			$value = 666;
 			break;
 	}
 }
@@ -87,15 +87,15 @@ Returns an associative array array with:
 	ref - Function reference
 	arc - Expected argument count
 */
-public function DoFunction($Name, &$Value) {
-	switch ($Name) {
+public function doFunction($name, &$value) {
+	switch ($name) {
 		case 'cos':
 			// Map to a system function
-			$Value = ['ref' => 'cos', 'arc' => 1];
+			$value = ['ref' => 'cos', 'arc' => 1];
 			break;
 		case 'minadd':
 			// Map to a public object instance function
-			$Value = ['ref' => [$this, 'MinAdd'], 'arc' => 2];
+			$value = ['ref' => [$this, 'minAdd'], 'arc' => 2];
 			break;
 	}
 }
@@ -107,31 +107,31 @@ Custom functions, may be a
 	- Static class function
 	- Object instance function
 */
-static function Sum($Arguments) {
-	$Result = 0;
-	foreach ($Arguments as $Argument)
-		$Result += $Argument;
-	return $Result;
+static function sum($arguments) {
+	$result = 0;
+	foreach ($arguments as $argument)
+		$result += $argument;
+	return $result;
 }
 // Just a sample custom function
-function MinAdd($A, $B) {
-	$R = $A < 2 ? 2 : $A;
-	return $R + $B;
+function minAdd($a, $b) {
+	$r = $a < 2 ? 2 : $a;
+	return $r + $b;
 }
 
 // Let's do some calculations
-$Parser = new \Matex\Parser();
-$Parser->Variables = [
+$parser = new \Matex\Parser();
+$parser->variables = [
 	'a' => 1,
 	'bet' => -10.59,
 	'pi' => 3.141592653589
 	];
-$Parser->OnVariable = [$this, 'DoVariable'];
-$Parser->Functions = [
+$parser->onVariable = [$this, 'doVariable'];
+$parser->functions = [
 	'sin' => ['ref' => 'sin', 'arc' => 1],
 	'max' => ['ref' => 'max', 'arc' => null],
-	'sum' => ['ref' => '\\Space\\Class::Sum', 'arc' => null]
+	'sum' => ['ref' => '\\Space\\Class::sum', 'arc' => null]
 	];
-$Parser->OnFunction = [$this, 'DoFunction'];
-echo $Parser->Execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / bet ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
+$parser->onFunction = [$this, 'doFunction'];
+echo $parser->execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / bet ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
 ```
