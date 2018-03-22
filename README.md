@@ -1,5 +1,5 @@
 # Matex
-PHP Mathematical formula parser and evaluator
+PHP Mathematical expression parser and evaluator
 
 ## Features
 * Fast evaluation
@@ -136,3 +136,7 @@ $parser->functions = [
 $parser->onFunction = [$this, 'doFunction'];
 echo $parser->execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / bet ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
 ```
+
+## License
+
+Matex is distributed under MIT license. See [LICENSE.md](LICENSE.md) for more details.

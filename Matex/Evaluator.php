@@ -4,7 +4,7 @@ namespace Matex;
 
 class Exception extends \Exception {}
 
-class Parser {
+class Evaluator {
 
 private $pos;
 private $text;
