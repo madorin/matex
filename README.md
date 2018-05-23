@@ -14,13 +14,13 @@ PHP Mathematical expression parser and evaluator
 
 Basic:
 ```php
-$parser = new \Matex\Parser();
+$parser = new \Matex\Evaluator();
 echo $parser->execute('1 + 2');
 ```
 
 Variables:
 ```php
-$parser = new \Matex\Parser();
+$parser = new \Matex\Evaluator();
 $parser->variables = [
 	'a' => 1,
 	'b' => 2
@@ -38,7 +38,7 @@ public function doVariable($name, &$value) {
 	}
 }
 
-$parser = new \Matex\Parser();
+$parser = new \Matex\Evaluator();
 $parser->variables = [
 	'a' => 1
 	];
@@ -55,7 +55,7 @@ static function sum($arguments) {
 	return $result;
 }
 
-$parser = new \Matex\Parser();
+$parser = new \Matex\Evaluator();
 $parser->functions = [
 	'sum' => ['ref' => '\\Space\\Class::sum', 'arc' => null]
 ];
@@ -121,7 +121,7 @@ function minAdd($a, $b) {
 }
 
 // Let's do some calculations
-$parser = new \Matex\Parser();
+$parser = new \Matex\Evaluator();
 $parser->variables = [
 	'a' => 1,
 	'bet' => -10.59,
