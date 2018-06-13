@@ -8,24 +8,31 @@ PHP Mathematical expression parser and evaluator
 * Brackets, nested, unlimited levels
 * Variables: predefined or estimated dynamically
 * Functions: predefined or connected dynamically
-* String arguments to functions
+* String arguments in functions, like field("name")
+* String operations, currently concatenation is supported
 
 ## Examples
 
 Basic:
 ```php
-$parser = new \Matex\Parser();
-echo $parser->execute('1 + 2');
+$evaluator = new \Matex\Evaluator();
+echo $evaluator->execute('1 + 2');
+```
+
+String concatenation:
+```php
+$evaluator = new \Matex\Evaluator();
+echo $evaluator->execute('"String" + " " + "concatenation"');
 ```
 
 Variables:
 ```php
-$parser = new \Matex\Parser();
-$parser->variables = [
+$evaluator = new \Matex\Evaluator();
+$evaluator->variables = [
 	'a' => 1,
 	'b' => 2
 	];
-echo $parser->execute('a + b');
+echo $evaluator->execute('a + b');
 ```
 
 Dynamic variables:
@@ -38,12 +45,12 @@ public function doVariable($name, &$value) {
 	}
 }
 
-$parser = new \Matex\Parser();
-$parser->variables = [
+$evaluator = new \Matex\Evaluator();
+$evaluator->variables = [
 	'a' => 1
 	];
-$parser->onVariable = [$this, 'doVariable'];
-echo $parser->execute('a + b');
+$evaluator->onVariable = [$this, 'doVariable'];
+echo $evaluator->execute('a + b');
 ```
 
 Functions:
@@ -55,11 +62,11 @@ static function sum($arguments) {
 	return $result;
 }
 
-$parser = new \Matex\Parser();
-$parser->functions = [
+$evaluator = new \Matex\Evaluator();
+$evaluator->functions = [
 	'sum' => ['ref' => '\\Space\\Class::sum', 'arc' => null]
 ];
-echo $parser->execute('sum(1, 2, 3)');
+echo $evaluator->execute('sum(1, 2, 3)');
 ```
 
 Extravaganza:
@@ -121,20 +128,20 @@ function minAdd($a, $b) {
 }
 
 // Let's do some calculations
-$parser = new \Matex\Parser();
-$parser->variables = [
+$evaluator = new \Matex\Evaluator();
+$evaluator->variables = [
 	'a' => 1,
 	'bet' => -10.59,
 	'pi' => 3.141592653589
 	];
-$parser->onVariable = [$this, 'doVariable'];
-$parser->functions = [
+$evaluator->onVariable = [$this, 'doVariable'];
+$evaluator->functions = [
 	'sin' => ['ref' => 'sin', 'arc' => 1],
 	'max' => ['ref' => 'max', 'arc' => null],
 	'sum' => ['ref' => '\\Space\\Class::sum', 'arc' => null]
 	];
-$parser->onFunction = [$this, 'doFunction'];
-echo $parser->execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / bet ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
+$evaluator->onFunction = [$this, 'doFunction'];
+echo $evaluator->execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / bet ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
 ```
 
 ## License

@@ -16,14 +16,14 @@ public $onFunction;
 
 private function getIdentity(bool &$kind = null, string &$value = null): bool {
 	$ops = $this->pos;
-	$ist = ($this->text[$this->pos] ?? false) == '\'';
+	$ist = ($this->text[$this->pos] ?? false) == '"';
 	if ($ist) $this->pos++;
-	while (($char = $this->text[$this->pos] ?? false) && (($ist && ($char != '\'')) || ctype_alnum($char) || in_array($char, ['_', '.'])))
+	while ((($char = $this->text[$this->pos] ?? false) !== false) && (($ist && ($char != '"')) || ctype_alnum($char) || in_array($char, ['_', '.'])))
 		$this->pos++;
 	if (!$len = $this->pos - $ops) return false;
 	$str = substr($this->text, $ops, $len);
 	if ($ist) {
-		if ($char != '\'') return false;
+		if ($char != '"') return false;
 		$this->pos++;
 		$value = substr($str, 1);
 		$kind = 4;
@@ -85,7 +85,7 @@ private function proArguments($arguments) {
 	return $result;
 }
 
-private function getFunction(string $name): float {
+private function getFunction(string $name) {
 	$routine = $this->functions[$name] ?? null;
 	if (!isset($routine) && isset($this->onFunction)) {
 		call_user_func_array($this->onFunction, [$name, &$routine]);
@@ -146,8 +146,11 @@ private function calculate() {
 	while (in_array($char = $this->text[$this->pos] ?? false, ['+', '-'])) {
 		$this->pos++;
 		$subTerm = $this->subTerm();
-		if ($char == '-')
-			$subTerm = -$subTerm;
+		if (($char == '+') && is_string($value)) {
+			$value .= $subTerm;
+			continue;
+		}
+		if ($char == '-') $subTerm = -$subTerm;
 		$value += $subTerm;
 	}
 	return $value;
@@ -161,7 +164,7 @@ private function perform(string $formula) {
 	return $this->calculate();
 }
 
-public function execute(string $formula): float {
+public function execute(string $formula) {
 	$b = 0;
 	for ($i = 0; $i < strlen($formula); $i++) {
 		switch ($formula[$i]) {
@@ -171,7 +174,29 @@ public function execute(string $formula): float {
 	}
 	if ($b != 0)
 		throw new Exception('Unmatched brackets', 2);
-	return $this->perform(str_replace(' ', '', strtolower($formula)));
+	$i = strpos($formula, '"');
+	if ($i === false)
+		$formula = str_replace(' ', '', strtolower($formula));
+	else {
+		$cleaned = '';
+		$l = strlen($formula);
+		$s = 0;
+		$b = false;
+		do {
+			if ($b) $i++;
+			$part = substr($formula, $s, $i - $s);
+			if (!$b) $part = str_replace(' ', '', strtolower($part));
+			$s = $i;
+			$b = !$b;
+			$cleaned .= $part;
+			$d = $s + 1;
+			if ($l < $d) break;
+		} while (($i = strpos($formula, '"', $d)) !== false);
+		if ($l != $s)
+			$cleaned .= str_replace(' ', '', strtolower(substr($formula, $s)));
+		$formula = $cleaned;
+	}
+	return $this->perform($formula);
 }
 
 }
