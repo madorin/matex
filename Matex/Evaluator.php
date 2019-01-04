@@ -158,7 +158,7 @@ private function calculate() {
 
 private function perform(string $formula) {
 	$this->pos = 0;
-	$formula = preg_replace('/(.*[+\-*\/^(])([+\-])([0-9a-z].*)/i', '${1}0$2$3', $formula);
+	$formula = preg_replace('/(.*[+\-*\/^(])([+\-])([0-9a-z]+)(.*)/i', '${1}(0$2$3)$4', $formula);
 	$this->text = $formula;
 	return $this->calculate();
 }
