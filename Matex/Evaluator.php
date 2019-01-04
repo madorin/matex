@@ -109,8 +109,9 @@ private function term() {
 			throw new Exception('Syntax error', 1);
 		return $value;
 	}
-	if (!$this->getIdentity($kind, $name))
+	if (!$this->getIdentity($kind, $name)) {
 		throw new Exception('Syntax error', 1);
+	}
 	switch ($kind) {
 		case 1: return (float) $name;
 		case 2: return $this->getVariable($name);
@@ -158,8 +159,7 @@ private function calculate() {
 
 private function perform(string $formula) {
 	$this->pos = 0;
-	if (in_array($formula[0], ['-', '+']))
-		$formula = '0'.$formula;
+	$formula = preg_replace('/(.*[+\-*\/^(])([+\-])([0-9a-z].*)/i', '${1}0$2$3', $formula);
 	$this->text = $formula;
 	return $this->calculate();
 }
