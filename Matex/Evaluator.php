@@ -109,9 +109,8 @@ private function term() {
 			throw new Exception('Syntax error', 1);
 		return $value;
 	}
-	if (!$this->getIdentity($kind, $name)) {
+	if (!$this->getIdentity($kind, $name))
 		throw new Exception('Syntax error', 1);
-	}
 	switch ($kind) {
 		case 1: return (float) $name;
 		case 2: return $this->getVariable($name);
