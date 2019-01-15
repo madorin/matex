@@ -39,8 +39,8 @@ final class EvaluatorTest extends TestCase
     {
         $evaluator = new \Matex\Evaluator();
         $this->assertEquals(
-            -48,
-            $evaluator->execute("2 + 2 * -125 / 5")
+            -52,
+            $evaluator->execute("-2 + 2 * -125 / 5")
         );
     }
 
