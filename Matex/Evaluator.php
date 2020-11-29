@@ -14,21 +14,21 @@ public $onVariable;
 public $functions = []; // ARCTAN COS SIN TAN ABS EXP LN LOG SQRT SQR INT FRAC TRUNC ROUND ARCSIN ARCCOS SIGN NOT
 public $onFunction;
 
-private function getIdentity(bool &$kind = null, string &$value = null): bool {
+private function getIdentity(int &$kind = null, string &$value = null): bool {
 	$ops = $this->pos;
 	$ist = ($this->text[$this->pos] ?? false) == '"';
-	if ($ist) $this->pos++;
-	while ((($char = $this->text[$this->pos] ?? false) !== false) && (($ist && ($char != '"')) || ctype_alnum($char) || in_array($char, ['_', '.'])))
+	if ($ist) {
+		$this->pos++;
+		if (($ist = strpos($this->text, '"', $this->pos)) === false) return false;
+		$kind = 4;
+		$value = substr($this->text, $this->pos, $ist - $this->pos);
+		$this->pos = $ist + 1;
+		return true;
+	}
+	while ((($char = $this->text[$this->pos] ?? false) !== false) && (ctype_alnum($char) || in_array($char, ['.', '_'])))
 		$this->pos++;
 	if (!$len = $this->pos - $ops) return false;
 	$str = substr($this->text, $ops, $len);
-	if ($ist) {
-		if ($char != '"') return false;
-		$this->pos++;
-		$value = substr($str, 1);
-		$kind = 4;
-		return true;
-	}
 	if (is_numeric($str)) $kind = 1;
 	else {
 		if (ctype_digit($str[0]) || (strpos($str, '.') !== false)) return false;
@@ -38,7 +38,7 @@ private function getIdentity(bool &$kind = null, string &$value = null): bool {
 	return true;
 }
 
-private function getVariable(string $name): float {
+private function getVariable(string $name) {
 	$value = $this->variables[$name] ?? null;
 	if (!isset($value) && isset($this->onVariable)) {
 		call_user_func_array($this->onVariable, [$name, &$value]);
@@ -101,22 +101,29 @@ private function getFunction(string $name) {
 }
 
 private function term() {
+	$minus = false;
+	while ((($char = $this->text[$this->pos] ?? false) !== false) && in_array($char, ['-', '+'])) {
+		$negat = $char == '-';
+		$minus = $minus ? ($negat ? false : true) : $negat;
+		$this->pos++;
+	}
 	if ($this->text[$this->pos] == '(') {
 		$this->pos++;
 		$value = $this->calculate();
 		$this->pos++;
 		if (!in_array($this->text[$this->pos] ?? false, [false, '+', '-', '/', '*', '^', ')']))
 			throw new Exception('Syntax error', 1);
-		return $value;
+		return $minus ? - $value : $value;
 	}
 	if (!$this->getIdentity($kind, $name))
 		throw new Exception('Syntax error', 1);
 	switch ($kind) {
-		case 1: return (float) $name;
-		case 2: return $this->getVariable($name);
-		case 3: return $this->getFunction($name);
-		case 4: return $name; // string
+		case 1: $value = (float) $name; break;
+		case 2: $value = $this->getVariable($name); break;
+		case 3: $value = $this->getFunction($name); break;
+		case 4: $value = $name; break;
 	}
+	return $minus ? - $value : $value;;
 }
 
 private function subTerm() {
@@ -158,8 +165,6 @@ private function calculate() {
 
 private function perform(string $formula) {
 	$this->pos = 0;
-	if (in_array($formula[0], ['-', '+']))
-		$formula = '0'.$formula;
 	$this->text = $formula;
 	return $this->calculate();
 }
