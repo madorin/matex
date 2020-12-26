@@ -7,7 +7,7 @@ PHP Mathematical expression parser and evaluator
 Install the latest version with
 
 ```bash
-$ composer require monolog/monolog
+$ composer require madorin/matex
 ```
 
 ## Features
