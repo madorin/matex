@@ -25,5 +25,6 @@
 		"psr-4": {
 			"Matex\\": "src"
 		}
-	}
+	},
+	"minimum-stability": "dev"
 }
