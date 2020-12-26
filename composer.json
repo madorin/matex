@@ -1,0 +1,29 @@
+{
+	"name": "madorin/matex",
+	"description": "PHP Mathematical expression parser and evaluator",
+	"type": "library",
+	"keywords": ["evaluator", "parser", "expression", "math"],
+	"homepage": "https://github.com/madorin/matex",
+	"readme": "README.md",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Dorin Marcoci",
+			"email": "dorin.marcoci@gmail.com",
+			"homepage": "https://www.marcodor.com",
+			"role": "Developer"
+		}
+	],
+	"support": {
+		"source": "https://github.com/madorin/matex",
+		"issues": "https://github.com/madorin/matex/issues"
+	},
+	"require": {
+		"php": ">=7.3"
+	},
+	"autoload": {
+		"psr-4": {
+			"Matex\\": "src"
+		}
+	}
+}
