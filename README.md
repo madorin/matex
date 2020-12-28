@@ -1,14 +1,8 @@
+
 # Matex
 
 PHP Mathematical expression parser and evaluator
 
-## Installation
-
-Install the latest version with
-
-```bash
-$ composer require madorin/matex
-```
 
 ## Features
 
@@ -20,6 +14,18 @@ $ composer require madorin/matex
 * Functions: predefined or connected dynamically
 * String arguments in functions, like field("name")
 * String operations, currently concatenation is supported
+
+
+## Installation
+
+Run
+
+```bash
+$ composer require madorin/matex
+```
+
+See [MANUAL.md](doc/MANUAL.md) for more details and options.
+
 
 ## Examples
 
@@ -154,9 +160,11 @@ $evaluator->onFunction = [$this, 'doFunction'];
 echo $evaluator->execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / bet ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
 ```
 
+
 ## Author
 
 Dorin Marcoci - <dorin.marcoci@gmail.com> - <https://www.marcodor.com>
+
 
 ## License
 
