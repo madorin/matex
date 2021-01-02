@@ -160,6 +160,8 @@ $evaluator->onFunction = [$this, 'doFunction'];
 echo $evaluator->execute('a + MinAdd(PI * sin(zen), cos(-1.7 / pi)) / bet ^ ((A + 2) * 2) + sum(5, 4, max(6, hit))');
 ```
 
+See [examples/README.md](examples/README.md) for code samples.
+
 
 ## Author
 

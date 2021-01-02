@@ -43,6 +43,11 @@ echo $evaluator->execute('1 + 2');
 ```
 
 
+## Usage
+
+See [examples/README.md](../examples/README.md) for code samples.
+
+
 ## Author
 
 Dorin Marcoci - <dorin.marcoci@gmail.com> - <https://www.marcodor.com>
