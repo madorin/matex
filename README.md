@@ -1,4 +1,4 @@
-![License](https://img.shields.io/github/license/Madorin/Matex)
+[![License](https://img.shields.io/github/license/Madorin/Matex)](LICENSE.md)
 
 
 # Matex
