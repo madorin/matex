@@ -2,7 +2,7 @@
 	"name": "madorin/matex",
 	"description": "PHP Mathematical expression parser and evaluator",
 	"type": "library",
-	"keywords": ["evaluator", "parser", "expression", "formula", "math", "eval"],
+	"keywords": ["evaluator", "parser", "calculator", "expression", "formula", "math", "eval"],
 	"homepage": "https://github.com/madorin/matex",
 	"readme": "README.md",
 	"license": "MIT",
