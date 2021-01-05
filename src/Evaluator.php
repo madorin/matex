@@ -100,6 +100,16 @@ private function getFunction(string $name) {
 	return call_user_func_array($routine['ref'], $this->proArguments($arguments));
 }
 
+private function checkFloats($a, $b) {
+	if (is_float($a) && is_float($b)) return;
+	throw new Exception('Non-numeric value', 8);
+}
+
+private function checkString($a) {
+	if (is_string($a)) return;
+	throw new Exception('Non-string value', 9);
+}
+
 private function term() {
 	$minus = false;
 	while ((($char = $this->text[$this->pos] ?? false) !== false) && in_array($char, ['-', '+'])) {
@@ -128,20 +138,21 @@ private function term() {
 
 private function subTerm() {
 	$value = $this->term();
-	while (in_array($char = $this->text[$this->pos] ?? false, ['*', '^', '/'])) {
+	while (in_array($char = $this->text[$this->pos] ?? false, ['*', '/', '^'])) {
 		$this->pos++;
 		$term = $this->term();
+		$this->checkFloats($value, $term);
 		switch ($char) {
 			case '*':
-				$value = $value * $term;
+				$value *= $term;
 				break;
 			case '/':
 				if ($term == 0)
 					throw new Exception('Division by zero', 7);
-				$value = $value / $term;
+				$value /= $term;
 				break;
 			case '^':
-				$value = pow($value, $term);
+				$value **= $term;
 				break;
 		}
 	}
@@ -154,9 +165,11 @@ private function calculate() {
 		$this->pos++;
 		$subTerm = $this->subTerm();
 		if (($char == '+') && is_string($value)) {
+			$this->checkString($subTerm);
 			$value .= $subTerm;
 			continue;
 		}
+		$this->checkFloats($value, $subTerm);
 		if ($char == '-') $subTerm = -$subTerm;
 		$value += $subTerm;
 	}
