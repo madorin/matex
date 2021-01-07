@@ -68,7 +68,7 @@ private function getArguments(&$arguments = []): bool {
 		elseif ($char == '(') $b++;
 		$this->pos++;
 	}
-	if (!in_array($char, [false, '+', '-', '/', '*', '^', ')']))
+	if (!in_array($char, [false, '+', '-', '/', '*', '^', '%', ')']))
 		return false;
 	$this->addArgument($arguments, substr($this->text, $mark, $this->pos - $mark - 1));
 	return true;
@@ -100,8 +100,12 @@ private function getFunction(string $name) {
 	return call_user_func_array($routine['ref'], $this->proArguments($arguments));
 }
 
-private function checkFloats($a, $b) {
-	if (is_float($a) && is_float($b)) return;
+private function isNumer($value): bool {
+	return is_float($value) || is_integer($value);
+}
+
+private function checkNumers($a, $b) {
+	if ($this->isNumer($a) && $this->isNumer($b)) return;
 	throw new Exception('Non-numeric value', 8);
 }
 
@@ -121,7 +125,7 @@ private function term() {
 		$this->pos++;
 		$value = $this->calculate();
 		$this->pos++;
-		if (!in_array($this->text[$this->pos] ?? false, [false, '+', '-', '/', '*', '^', ')']))
+		if (!in_array($this->text[$this->pos] ?? false, [false, '+', '-', '/', '*', '^', '%', ')']))
 			throw new Exception('Syntax error', 1);
 		return $minus ? - $value : $value;
 	}
@@ -138,10 +142,10 @@ private function term() {
 
 private function subTerm() {
 	$value = $this->term();
-	while (in_array($char = $this->text[$this->pos] ?? false, ['*', '/', '^'])) {
+	while (in_array($char = $this->text[$this->pos] ?? false, ['*', '/', '^', '%'])) {
 		$this->pos++;
 		$term = $this->term();
-		$this->checkFloats($value, $term);
+		$this->checkNumers($value, $term);
 		switch ($char) {
 			case '*':
 				$value *= $term;
@@ -153,6 +157,9 @@ private function subTerm() {
 				break;
 			case '^':
 				$value **= $term;
+				break;
+			case '%':
+				$value %= $term;
 				break;
 		}
 	}
@@ -169,7 +176,7 @@ private function calculate() {
 			$value .= $subTerm;
 			continue;
 		}
-		$this->checkFloats($value, $subTerm);
+		$this->checkNumers($value, $subTerm);
 		if ($char == '-') $subTerm = -$subTerm;
 		$value += $subTerm;
 	}

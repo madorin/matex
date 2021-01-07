@@ -46,7 +46,19 @@ echo $evaluator->execute('1 + 2');
 
 ## Usage
 
-See [examples/README.md](../examples/README.md) for code samples.
+See [examples](../examples/README.md) for code samples.
+
+
+## Operators
+
+Matex supports the following operators:
+
+	+	Addition
+	-	Subtraction 
+	*	Multiplication
+	/	Division
+	^	Exponentiation
+	%	Modulus
 
 
 ## Author
@@ -56,4 +68,4 @@ Dorin Marcoci - <dorin.marcoci@gmail.com> - <https://www.marcodor.com>
 
 ## License
 
-Matex is distributed under MIT license. See [LICENSE.md](../LICENSE.md) for more details.
+Matex is distributed under MIT license. See [license](../LICENSE.md) for more details.
