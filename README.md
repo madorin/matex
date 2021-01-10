@@ -26,7 +26,7 @@ Using [Composer](https://getcomposer.org) run
 $ composer require madorin/matex
 ```
 
-See [MANUAL.md](doc/MANUAL.md) for more details and options.
+See [manual](doc/MANUAL.md) for more details and options.
 
 
 ## Usage
@@ -172,4 +172,4 @@ Dorin Marcoci - <dorin.marcoci@gmail.com> - <https://www.marcodor.com>
 
 ## License
 
-Matex is distributed under MIT license. See [license](LICENSE.md) for more details.
+Matex is distributed under [MIT license](LICENSE.md).

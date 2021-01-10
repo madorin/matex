@@ -11,7 +11,7 @@ Matex can be installed using Composer package manager or manually connected to y
 
 ### Composer way
 
-Make sure the Composer is installed and your project is properly configured to use Composer tool.
+Make sure the [Composer](https://getcomposer.org) is installed and your project is properly configured to use Composer tool.
 Execute in console the following code in order to connect Matex library:
 
 ```bash
@@ -68,4 +68,4 @@ Dorin Marcoci - <dorin.marcoci@gmail.com> - <https://www.marcodor.com>
 
 ## License
 
-Matex is distributed under MIT license. See [license](../LICENSE.md) for more details.
+Matex is distributed under [MIT license](../LICENSE.md).
