@@ -109,6 +109,11 @@ private function checkNumers($a, $b) {
 	throw new Exception('Non-numeric value', 8);
 }
 
+private function checkBoolean($a, $b) {
+    if (is_bool($a) && is_bool($b)) return;
+    throw new Exception('Non-boolean value', 8);
+}
+
 private function checkString($a) {
 	if (is_string($a)) return;
 	throw new Exception('Non-string value', 9);
@@ -116,18 +121,23 @@ private function checkString($a) {
 
 private function term() {
 	$minus = false;
-	while ((($char = $this->text[$this->pos] ?? false) !== false) && in_array($char, ['-', '+'])) {
+	$not = false;
+	while ((($char = $this->text[$this->pos] ?? false) !== false) && in_array($char, ['-', '+', '!'])) {
 		$negat = $char == '-';
 		$minus = $minus ? ($negat ? false : true) : $negat;
-		$this->pos++;
+        $negat = $char == '!';
+        $not = $not ? ($negat ? false : true) : $negat;
+        $this->pos++;
 	}
 	if ($this->text[$this->pos] == '(') {
 		$this->pos++;
 		$value = $this->calculate();
 		$this->pos++;
-		if (!in_array($this->text[$this->pos] ?? false, [false, '+', '-', '/', '*', '^', '%', ')']))
+		if (!in_array($this->text[$this->pos] ?? false, [false, '+', '-', '/', '*', '^', '%', ')', '|', '&', '!']))
 			throw new Exception('Syntax error', 1);
-		return $minus ? - $value : $value;
+		return (is_bool($value)) ?
+            ($not ? !$value : $value) :
+            ($minus ? - $value : $value);
 	}
 	if (!$this->getIdentity($kind, $name))
 		throw new Exception('Syntax error', 1);
@@ -137,15 +147,21 @@ private function term() {
 		case 3: $value = $this->getFunction($name); break;
 		case 4: $value = $name; break;
 	}
-	return $minus ? - $value : $value;;
+	return (is_bool($value)) ?
+        ($not ? !$value : $value) :
+        ($minus ? - $value : $value);
 }
 
 private function subTerm() {
 	$value = $this->term();
-	while (in_array($char = $this->text[$this->pos] ?? false, ['*', '/', '^', '%'])) {
+	while (in_array($char = $this->text[$this->pos] ?? false, ['*', '/', '^', '%', '|', '&'])) {
 		$this->pos++;
 		$term = $this->term();
-		$this->checkNumers($value, $term);
+		if (in_array($char, ['|', '&'])) {
+            $this->checkBoolean($value, $term);
+        } else {
+            $this->checkNumers($value, $term);
+        }
 		switch ($char) {
 			case '*':
 				$value *= $term;
@@ -161,7 +177,13 @@ private function subTerm() {
 			case '%':
 				$value %= $term;
 				break;
-		}
+            case '|':
+                $value = $value || $term;
+                break;
+            case '&':
+                $value = $value && $term;
+                break;
+        }
 	}
 	return $value;
 }
