@@ -13,6 +13,8 @@ public $variables = [];
 public $onVariable;
 public $functions = []; // ARCTAN COS SIN TAN ABS EXP LN LOG SQRT SQR INT FRAC TRUNC ROUND ARCSIN ARCCOS SIGN NOT
 public $onFunction;
+public $terms = [];
+public $onlyParse = false;
 
 private function getIdentity(int &$kind = null, string &$value = null): bool {
 	$ops = $this->pos;
@@ -131,6 +133,11 @@ private function term() {
 	}
 	if (!$this->getIdentity($kind, $name))
 		throw new Exception('Syntax error', 1);
+    if ($this->onlyParse) {
+        $kinds_arr = [1 => 'number', 2 => 'variable', 3 => 'function', 4 => 'term'];
+        $this->terms[] = ['kind' => $kinds_arr[$kind], 'term' => $name];
+        return $minus ? - $name : $name;
+    }
 	switch ($kind) {
 		case 1: $value = (float) $name; break;
 		case 2: $value = $this->getVariable($name); break;
@@ -145,6 +152,8 @@ private function subTerm() {
 	while (in_array($char = $this->text[$this->pos] ?? false, ['*', '/', '^', '%'])) {
 		$this->pos++;
 		$term = $this->term();
+        if ($this->onlyParse)
+            return $term;
 		$this->checkNumers($value, $term);
 		switch ($char) {
 			case '*':
@@ -180,6 +189,8 @@ private function calculate() {
 		if ($char == '-') $subTerm = -$subTerm;
 		$value += $subTerm;
 	}
+    if ($this->onlyParse)
+        return $this->terms;
 	return $value;
 }
 
@@ -189,7 +200,9 @@ private function perform(string $formula) {
 	return $this->calculate();
 }
 
-public function execute(string $formula) {
+public function execute(string $formula, $onlyParse = false) {
+    $this->terms = [];
+    $this->onlyParse = $onlyParse;
 	$b = 0;
 	for ($i = 0; $i < strlen($formula); $i++) {
 		switch ($formula[$i]) {
