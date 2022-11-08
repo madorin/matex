@@ -31,7 +31,7 @@ private function getIdentity(int &$kind = null, string &$value = null): bool {
 	$str = substr($this->text, $ops, $len);
 	if (is_numeric($str)) $kind = 1;
 	else {
-		if (ctype_digit($str[0]) || (strpos($str, '.') !== false)) return false;
+		if (ctype_digit($str[0])) return false;
 		$kind = $char == '(' ? 3 : 2;
 	}
 	$value = $str;
